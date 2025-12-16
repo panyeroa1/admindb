@@ -1,0 +1,7 @@
+{
+  "name": "Eburon Admin Voice",
+  "description": "Real-estate admin dashboard with Gemini Live conversational AI",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
