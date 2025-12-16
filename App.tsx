@@ -5,6 +5,9 @@ import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import AuthPage from './components/AuthPage';
 import DashboardView from './views/DashboardView';
+import ManagerDashboardView from './views/ManagerDashboardView';
+import AgentDashboardView from './views/AgentDashboardView';
+import OwnerDashboardView from './views/OwnerDashboardView';
 import LeadsView from './views/LeadsView';
 import VoiceAssistant from './components/VoiceAssistant';
 import { ViewState, Lead, Task, Message, Property, User, UserRole } from './types';
@@ -72,10 +75,23 @@ const App: React.FC = () => {
   ]);
 
   const renderView = () => {
-    // If we have specific components, use them. Otherwise, placeholder.
+    // Role-based Dashboard Routing
+    if (currentView === 'dashboard') {
+      switch (user?.role) {
+        case 'manager':
+          return <ManagerDashboardView />;
+        case 'agent':
+          return <AgentDashboardView />;
+        case 'owner':
+          return <OwnerDashboardView />;
+        case 'broker':
+        default:
+          return <DashboardView leads={leads} tasks={tasks} messages={messages} properties={properties} />;
+      }
+    }
+
+    // Other Views
     switch (currentView) {
-      case 'dashboard':
-        return <DashboardView leads={leads} tasks={tasks} messages={messages} properties={properties} />;
       case 'leads':
         return <LeadsView leads={leads} />;
       case 'listings':

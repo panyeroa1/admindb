@@ -29,9 +29,11 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, isOpen, ro
     { id: 'maintenance', icon: 'build', label: 'Maintenance', roles: ['manager', 'owner', 'agent'] },
     { id: 'work_orders', icon: 'assignment', label: 'Work Orders', roles: ['manager', 'agent'] },
     { id: 'vendors', icon: 'engineering', label: 'Vendors', roles: ['manager'] },
+    { id: 'compliance', icon: 'verified_user', label: 'Compliance', roles: ['manager'] },
     
     // Admin / Finance
     { category: 'ADMINISTRATION', roles: ['broker', 'manager', 'owner'] },
+    { id: 'team', icon: 'groups', label: 'Team', roles: ['manager'] },
     { id: 'finance', icon: 'paid', label: 'Financials', roles: ['owner', 'manager'] },
     { id: 'commissions', icon: 'payments', label: 'Commissions', roles: ['broker'] },
     { id: 'reports', icon: 'assessment', label: 'Reports', roles: ['broker', 'manager', 'owner'] },
