@@ -11,10 +11,20 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, isOpen, role, onLogout }) => {
   // Define menu items with enhanced role access
+  // BROKER sees EVERYTHING.
+  // MANAGER: Dashboard, Portfolio, Admin
+  // AGENT: Dashboard, Sales, Work Orders
+  // OWNER: Dashboard, Portfolio, Finance
+  // MAINTENANCE: Dashboard, Maintenance
   const allItems = [
     // Common
-    { id: 'dashboard', icon: 'dashboard', label: 'Dashboard', roles: ['broker', 'manager', 'agent', 'owner', 'maintenance'] },
-    { id: 'inbox', icon: 'inbox', label: 'Inbox', badge: 12, roles: ['broker', 'agent', 'manager'] },
+    { id: 'dashboard', icon: 'dashboard', label: 'Dashboard', roles: ['broker', 'manager', 'agent', 'owner', 'maintenance', 'user'] },
+    { id: 'inbox', icon: 'inbox', label: 'Inbox', badge: 12, roles: ['broker', 'agent', 'manager', 'user'] },
+    
+    // User / Tenant Section
+    { category: 'MY RENTAL', roles: ['user'] },
+    { id: 'listings', icon: 'search', label: 'Browse Homes', roles: ['user'] },
+    { id: 'my_requests', icon: 'build', label: 'My Requests', roles: ['user'] },
     
     // Broker / Agent Section
     { category: 'SALES & LEASING', roles: ['broker', 'agent'] },
@@ -24,22 +34,22 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, isOpen, ro
     { id: 'offers', icon: 'gavel', label: 'Offers', roles: ['broker'] },
     
     // Manager / Owner Section
-    { category: 'PORTFOLIO', roles: ['manager', 'owner', 'maintenance'] },
-    { id: 'portfolio', icon: 'apartment', label: 'Properties', roles: ['manager', 'owner'] },
-    { id: 'maintenance', icon: 'build', label: 'Maintenance', roles: ['manager', 'owner', 'agent', 'maintenance'] },
-    { id: 'work_orders', icon: 'assignment', label: 'Work Orders', roles: ['manager', 'agent', 'maintenance'] },
-    { id: 'vendors', icon: 'engineering', label: 'Vendors', roles: ['manager'] },
-    { id: 'compliance', icon: 'verified_user', label: 'Compliance', roles: ['manager'] },
+    { category: 'PORTFOLIO', roles: ['manager', 'owner', 'maintenance', 'broker'] },
+    { id: 'portfolio', icon: 'apartment', label: 'Properties', roles: ['manager', 'owner', 'broker'] },
+    { id: 'maintenance', icon: 'build', label: 'Maintenance', roles: ['manager', 'owner', 'agent', 'maintenance', 'broker'] },
+    { id: 'work_orders', icon: 'assignment', label: 'Work Orders', roles: ['manager', 'agent', 'maintenance', 'broker'] },
+    { id: 'vendors', icon: 'engineering', label: 'Vendors', roles: ['manager', 'broker'] },
+    { id: 'compliance', icon: 'verified_user', label: 'Compliance', roles: ['manager', 'broker'] },
     
     // Admin / Finance
     { category: 'ADMINISTRATION', roles: ['broker', 'manager', 'owner'] },
-    { id: 'team', icon: 'groups', label: 'Team', roles: ['manager'] },
-    { id: 'finance', icon: 'paid', label: 'Financials', roles: ['owner', 'manager'] },
+    { id: 'team', icon: 'groups', label: 'Team', roles: ['manager', 'broker'] },
+    { id: 'finance', icon: 'paid', label: 'Financials', roles: ['owner', 'manager', 'broker'] },
     { id: 'commissions', icon: 'payments', label: 'Commissions', roles: ['broker'] },
     { id: 'reports', icon: 'assessment', label: 'Reports', roles: ['broker', 'manager', 'owner'] },
     
     // Settings
-    { id: 'settings', icon: 'settings', label: 'Settings', roles: ['broker', 'manager', 'agent', 'owner', 'maintenance'] },
+    { id: 'settings', icon: 'settings', label: 'Settings', roles: ['broker', 'manager', 'agent', 'owner', 'maintenance', 'user'] },
   ];
 
   // Filter items based on role
@@ -55,11 +65,17 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, isOpen, ro
 
         <div className="flex-1 overflow-y-auto py-4 scrollbar-thin">
           {menuItems.map((item, idx) => {
+            // Check if this item is a category header
             if (item.category) {
-               // Logic to check if any item in this category is actually visible
+               // Logic to check if any item in this category is actually visible for the current role
                const nextItems = menuItems.slice(idx + 1);
-               const hasItems = nextItems.some(i => !i.category);
-               if (!hasItems) return null;
+               // Find the index of the next category to limit our search scope
+               const nextCategoryIndex = nextItems.findIndex(i => i.category);
+               // Get items only until the next category
+               const itemsInCategory = nextCategoryIndex === -1 ? nextItems : nextItems.slice(0, nextCategoryIndex);
+               
+               // If there are no items in this category for this role, hide the header
+               if (itemsInCategory.length === 0) return null;
 
                return (
                 <div key={idx} className="px-6 pt-6 pb-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider">

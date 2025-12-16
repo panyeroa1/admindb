@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { signInAnonymously, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../utils/firebase';
+import { supabase } from '../utils/supabaseClient';
 import { UserRole } from '../types';
 
 interface AuthPageProps {
@@ -21,13 +20,13 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLoginSuccess }) => {
 
   const handleQuickLogin = async (role: UserRole) => {
     setLoading(true);
-    // Simulate navigation to specific dashboard files concept
-    setLoadingText(`Redirecting to ${role}-dashboard...`);
+    setLoadingText(`Entering Demo Mode as ${role}...`);
     setError(null);
     try {
-      // Simulate slight network delay for realism
-      await new Promise(resolve => setTimeout(resolve, 800));
-      await signInAnonymously(auth);
+      // For Quick Access/Demo, we simulate a login or use a pre-set demo user if configured.
+      // Here we just pass the role to the app state to unlock the UI.
+      // In a real app, this would be `signInWithPassword` using a demo account.
+      await new Promise(resolve => setTimeout(resolve, 600));
       onLoginSuccess(role);
     } catch (err: any) {
       setError(err.message);
@@ -45,10 +44,26 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLoginSuccess }) => {
     setLoadingText('Signing In...');
     setError(null);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      onLoginSuccess('broker'); // Default role for manual login in demo
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+      
+      // Fetch role from profile or metadata
+      let userRole: UserRole = 'user';
+      if (data.user?.user_metadata?.role) {
+          userRole = data.user.user_metadata.role as UserRole;
+      } else {
+          // Fallback: fetch from profiles table
+          const { data: profile } = await supabase.from('profiles').select('role').eq('id', data.user.id).single();
+          if (profile) userRole = profile.role as UserRole;
+      }
+
+      onLoginSuccess(userRole);
     } catch (err: any) {
-      setError("Invalid email or password");
+      setError(err.message || "Invalid email or password");
       setLoading(false);
     }
   };
@@ -67,8 +82,26 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLoginSuccess }) => {
     setLoadingText('Creating Account...');
     setError(null);
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      onLoginSuccess(registerRole);
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+            data: {
+                role: registerRole,
+                full_name: email.split('@')[0]
+            }
+        }
+      });
+
+      if (error) throw error;
+      
+      // Auto-login success usually, but check if confirmation is required
+      if (data.user) {
+         onLoginSuccess(registerRole);
+      } else {
+         setError("Check your email for confirmation link");
+         setLoading(false);
+      }
     } catch (err: any) {
       setError(err.message);
       setLoading(false);
@@ -153,7 +186,8 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLoginSuccess }) => {
               ))}
             </div>
             <div className="text-center">
-               <p className="text-xs text-gray-400">Select your role to simulate dashboard navigation.</p>
+               <p className="text-xs text-gray-400">Select a role to enter Demo Mode (Local Only).</p>
+               <p className="text-[10px] text-gray-300 mt-1">For DB Persistence, please Register/Login.</p>
             </div>
           </div>
         )}

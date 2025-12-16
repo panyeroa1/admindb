@@ -55,6 +55,23 @@ en: "Good morning, you're speaking with Beatrice. How can I help you today?"
 de: "Guten Tag, hier ist Beatrice. Wie kann ich Ihnen helfen?"
 `;
 
+// Helper to safely access API key in browser
+const getApiKey = () => {
+    try {
+        if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
+            return process.env.API_KEY;
+        }
+    } catch (e) {}
+    try {
+        // @ts-ignore
+        if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.API_KEY) {
+            // @ts-ignore
+            return import.meta.env.API_KEY;
+        }
+    } catch (e) {}
+    return '';
+};
+
 const VoiceAssistant: React.FC<VoiceAssistantProps> = ({ isOpen, onClose }) => {
   const [status, setStatus] = useState<CallStatus>('idle');
   const [isTalking, setIsTalking] = useState(false);
@@ -195,7 +212,10 @@ const VoiceAssistant: React.FC<VoiceAssistantProps> = ({ isOpen, onClose }) => {
       outputGainRef.current = outputGain;
       outputGain.connect(ac.destination);
 
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      // SAFE ACCESS to API Key
+      const apiKey = getApiKey();
+      if (!apiKey) throw new Error("API Key missing");
+      const ai = new GoogleGenAI({ apiKey });
       
       let resolveSession: (s: any) => void;
       const sessionPromise = new Promise<any>(resolve => { resolveSession = resolve; });

@@ -1,4 +1,4 @@
-export type UserRole = 'broker' | 'manager' | 'agent' | 'owner' | 'maintenance';
+export type UserRole = 'broker' | 'manager' | 'agent' | 'owner' | 'maintenance' | 'user';
 
 export interface User {
   uid: string;
@@ -67,4 +67,5 @@ export type ViewState =
   | 'compliance'
   | 'maintenance'
   | 'work_orders'
+  | 'my_requests'
   | 'schedule';
