@@ -13,7 +13,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, isOpen, ro
   // Define menu items with enhanced role access
   const allItems = [
     // Common
-    { id: 'dashboard', icon: 'dashboard', label: 'Dashboard', roles: ['broker', 'manager', 'agent', 'owner'] },
+    { id: 'dashboard', icon: 'dashboard', label: 'Dashboard', roles: ['broker', 'manager', 'agent', 'owner', 'maintenance'] },
     { id: 'inbox', icon: 'inbox', label: 'Inbox', badge: 12, roles: ['broker', 'agent', 'manager'] },
     
     // Broker / Agent Section
@@ -24,10 +24,10 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, isOpen, ro
     { id: 'offers', icon: 'gavel', label: 'Offers', roles: ['broker'] },
     
     // Manager / Owner Section
-    { category: 'PORTFOLIO', roles: ['manager', 'owner'] },
+    { category: 'PORTFOLIO', roles: ['manager', 'owner', 'maintenance'] },
     { id: 'portfolio', icon: 'apartment', label: 'Properties', roles: ['manager', 'owner'] },
-    { id: 'maintenance', icon: 'build', label: 'Maintenance', roles: ['manager', 'owner', 'agent'] },
-    { id: 'work_orders', icon: 'assignment', label: 'Work Orders', roles: ['manager', 'agent'] },
+    { id: 'maintenance', icon: 'build', label: 'Maintenance', roles: ['manager', 'owner', 'agent', 'maintenance'] },
+    { id: 'work_orders', icon: 'assignment', label: 'Work Orders', roles: ['manager', 'agent', 'maintenance'] },
     { id: 'vendors', icon: 'engineering', label: 'Vendors', roles: ['manager'] },
     { id: 'compliance', icon: 'verified_user', label: 'Compliance', roles: ['manager'] },
     
@@ -39,7 +39,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, isOpen, ro
     { id: 'reports', icon: 'assessment', label: 'Reports', roles: ['broker', 'manager', 'owner'] },
     
     // Settings
-    { id: 'settings', icon: 'settings', label: 'Settings', roles: ['broker', 'manager', 'agent', 'owner'] },
+    { id: 'settings', icon: 'settings', label: 'Settings', roles: ['broker', 'manager', 'agent', 'owner', 'maintenance'] },
   ];
 
   // Filter items based on role

@@ -21,7 +21,8 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLoginSuccess }) => {
 
   const handleQuickLogin = async (role: UserRole) => {
     setLoading(true);
-    setLoadingText(`Accessing ${role.charAt(0).toUpperCase() + role.slice(1)} Portal...`);
+    // Simulate navigation to specific dashboard files concept
+    setLoadingText(`Redirecting to ${role}-dashboard...`);
     setError(null);
     try {
       // Simulate slight network delay for realism
@@ -87,7 +88,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLoginSuccess }) => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-bg p-4 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-50 via-gray-50 to-white">
-      <div className="w-full max-w-[500px] bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-white/50 backdrop-blur-sm">
+      <div className="w-full max-w-[600px] bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-white/50 backdrop-blur-sm">
         
         {/* Header */}
         <div className="text-center mb-8">
@@ -131,12 +132,13 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLoginSuccess }) => {
         {/* Quick Access Tab */}
         {activeTab === 'quick' && (
           <div className="animate-[fadeIn_0.3s_ease]">
-            <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
               {[
                 { id: 'broker', icon: 'real_estate_agent', label: 'Broker', color: 'blue' },
                 { id: 'manager', icon: 'domain', label: 'Manager', color: 'green' },
                 { id: 'agent', icon: 'badge', label: 'Agent', color: 'orange' },
                 { id: 'owner', icon: 'key', label: 'Owner', color: 'purple' },
+                { id: 'maintenance', icon: 'build', label: 'Maintenance', color: 'red' },
               ].map((role) => (
                 <button 
                   key={role.id}
@@ -151,7 +153,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLoginSuccess }) => {
               ))}
             </div>
             <div className="text-center">
-               <p className="text-xs text-gray-400">Select your role to enter the simulation mode.</p>
+               <p className="text-xs text-gray-400">Select your role to simulate dashboard navigation.</p>
             </div>
           </div>
         )}
@@ -235,6 +237,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLoginSuccess }) => {
                 <option value="manager">Property Manager</option>
                 <option value="agent">Agent</option>
                 <option value="owner">Owner</option>
+                <option value="maintenance">Maintenance</option>
               </select>
             </div>
             <div className="pt-2">

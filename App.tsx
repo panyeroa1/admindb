@@ -8,6 +8,7 @@ import DashboardView from './views/DashboardView';
 import ManagerDashboardView from './views/ManagerDashboardView';
 import AgentDashboardView from './views/AgentDashboardView';
 import OwnerDashboardView from './views/OwnerDashboardView';
+import MaintenanceDashboardView from './views/MaintenanceDashboardView';
 import LeadsView from './views/LeadsView';
 import VoiceAssistant from './components/VoiceAssistant';
 import { ViewState, Lead, Task, Message, Property, User, UserRole } from './types';
@@ -84,6 +85,8 @@ const App: React.FC = () => {
           return <AgentDashboardView />;
         case 'owner':
           return <OwnerDashboardView />;
+        case 'maintenance':
+          return <MaintenanceDashboardView />;
         case 'broker':
         default:
           return <DashboardView leads={leads} tasks={tasks} messages={messages} properties={properties} />;
